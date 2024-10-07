@@ -12,6 +12,10 @@ cursor = conn.cursor()
 vectorizer = TfidfVectorizer()
 
 def getPages(claim):
+    """
+    Returns top k pages in the form of a list 
+    Each page contains its title and contents in json format 
+    """
     ents = ner(claim)
     namedEntities = [ent.text for ent in ents.ents]
 
@@ -56,7 +60,3 @@ def getPages(claim):
     top_k_scores = {entries[i]: scores[entries[i][0]] for i in top_k_ids}
 
     return list(top_k_scores.keys())
-
-
-
-
