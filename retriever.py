@@ -3,6 +3,8 @@ import json
 import spacy
 from sklearn.feature_extraction.text import TfidfVectorizer
 import numpy as np
+from table_retriever import get_tables
+from sent_retriever import getSentence
 
 ner = spacy.load("en_core_web_sm")
 
@@ -12,10 +14,6 @@ cursor = conn.cursor()
 vectorizer = TfidfVectorizer()
 
 def getPages(claim):
-    """
-    Returns top k pages in the form of a list 
-    Each page contains its title and contents in json format 
-    """
     """
     Returns top k pages in the form of a list 
     Each page contains its title and contents in json format 
@@ -64,3 +62,17 @@ def getPages(claim):
     top_k_scores = {entries[i]: scores[entries[i][0]] for i in top_k_ids}
 
     return list(top_k_scores.keys())
+
+def main():
+    claim = "Aramais Yepiskoposyan played for FC Ararat Yerevan, an Armenian football club based in Yerevan during 1986 to 1991."
+    k=5
+    l=5
+    q=3
+    pages = getPages(claim)
+    sentences = getSentence(pages,k,claim)
+    tables = get_tables(pages,claim,q)
+    print(tables)
+
+
+if __name__=="__main__":
+    main()
