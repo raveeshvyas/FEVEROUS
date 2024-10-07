@@ -13,7 +13,7 @@ cursor = conn.cursor()
 
 vectorizer = TfidfVectorizer()
 
-def getPages(claim):
+def getPages(claim,k):
     """
     Returns top k pages in the form of a list 
     Each page contains its title and contents in json format 
@@ -46,33 +46,29 @@ def getPages(claim):
     
     firstSentences.append(claim)
 
-    
     tfidf_matrix = vectorizer.fit_transform(firstSentences)
-
     claim_vector = tfidf_matrix[-1]
-
     relevance_scores = np.dot(tfidf_matrix[:-1], claim_vector.T).toarray().flatten()
 
     for i, entry in enumerate(entries):
         id_val = entry[0]
         scores[id_val] = relevance_scores[i]
 
-    k = 5
     top_k_ids = np.argsort(relevance_scores)[-k:][::-1]
     top_k_scores = {entries[i]: scores[entries[i][0]] for i in top_k_ids}
 
     return list(top_k_scores.keys())
 
+
 def main():
     claim = "Aramais Yepiskoposyan played for FC Ararat Yerevan, an Armenian football club based in Yerevan during 1986 to 1991."
-    k=5
-    l=5
-    q=3
-    pages = getPages(claim)
-    sentences = getSentence(pages,k,claim)
+    k = 5
+    l = 5
+    q = 3
+    pages = getPages(claim,k)
+    sentences = getSentence(pages,l,claim)
     tables = get_tables(pages,claim,q)
     print(tables)
-
 
 if __name__=="__main__":
     main()

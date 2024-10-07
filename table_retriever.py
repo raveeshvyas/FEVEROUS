@@ -17,32 +17,17 @@ def get_tables(pages,claim,q):
                         table_entries.append(concatenated_value)
                         concatenated_value=""
                     
-    table_entries.append(claim)
-                  
+    table_entries.append(claim)     
+
     tfidf_matrix = vectorizer.fit_transform(table_entries)
-
     claim_vector = tfidf_matrix[-1]
-
     relevance_scores = np.dot(tfidf_matrix[:-1], claim_vector.T).toarray().flatten()
 
     top_q_ids = np.argsort(relevance_scores)[-q:][::-1]
-
     top_q_scores= [table_entries[i]for i in top_q_ids] 
 
     return top_q_scores
     
-def main():
-    
-    claim="Aramais Yepiskoposyan played for FC Ararat Yerevan, an Armenian football club based in Yerevan during 1986 to 1991"
-    with open('article_sample.json', 'r') as file:
-        article_list = json.load(file)
-
-    for article in article_list:
-        top_q_scores=get_tables(article,claim)
-        print(top_q_scores)
-            
-if __name__=="__main__":
-    main()
 
 
 
