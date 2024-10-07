@@ -16,6 +16,10 @@ def getPages(claim):
     Returns top k pages in the form of a list 
     Each page contains its title and contents in json format 
     """
+    """
+    Returns top k pages in the form of a list 
+    Each page contains its title and contents in json format 
+    """
     ents = ner(claim)
     namedEntities = [ent.text for ent in ents.ents]
 
