@@ -4,6 +4,7 @@
 python3 -m venv myenv
 source myenv/bin/activate
 pip install -r requirements.txt
+python -m spacy download en_core_web_sm
 ```
 
 2. Download the sqlite dataset and extract it. The size of the database is 53 GB

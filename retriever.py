@@ -13,11 +13,7 @@ cursor = conn.cursor()
 
 vectorizer = TfidfVectorizer()
 
-def getPages(claim,k):
-    """
-    Returns top k pages in the form of a list 
-    Each page contains its title and contents in json format 
-    """
+def getPages(claim, k):
     ents = ner(claim)
     namedEntities = [ent.text for ent in ents.ents]
 
@@ -25,25 +21,25 @@ def getPages(claim,k):
         print("No named entities found.")
         return
     
+    # Optimized SQL query with LIMIT and refined LIKE
     like_clauses = " OR ".join([f"id LIKE ?" for _ in namedEntities])
-    sql_query = f"SELECT id, data FROM wiki WHERE {like_clauses};"
-    like_params = [f"%{entity}%" for entity in namedEntities]
+    sql_query = f"SELECT id FROM wiki WHERE {like_clauses} LIMIT 200;"
+    like_params = [f"{entity}%" for entity in namedEntities]
 
     cursor.execute(sql_query, like_params)
+    ids = cursor.fetchall()
+
+    if not ids:
+        print("No relevant pages found.")
+        return
+
+    # Fetch only the necessary 'data' for top `k` ids
+    ids_placeholder = ", ".join("?" for _ in ids)
+    cursor.execute(f"SELECT id, data FROM wiki WHERE id IN ({ids_placeholder})", [id[0] for id in ids])
     entries = cursor.fetchall()
 
     scores = {}
-    firstSentences = []
-
-    for entry in entries:
-        id_val = entry[0]
-        data_val = entry[1]
-        jsonData = json.loads(data_val)
-        if "sentence_0" in jsonData:
-            firstSentences.append(jsonData["sentence_0"])
-        else:
-            firstSentences.append("")
-    
+    firstSentences = [json.loads(entry[1]).get("sentence_0", "") for entry in entries]
     firstSentences.append(claim)
 
     tfidf_matrix = vectorizer.fit_transform(firstSentences)
@@ -60,15 +56,32 @@ def getPages(claim,k):
     return list(top_k_scores.keys())
 
 
+
 def main():
-    claim = "Aramais Yepiskoposyan played for FC Ararat Yerevan, an Armenian football club based in Yerevan during 1986 to 1991."
+    # claim = "Aramais Yepiskoposyan played for FC Ararat Yerevan, an Armenian football club based in Yerevan during 1986 to 1991."
+    data = []
+    with open("data.jsonl", "r") as f:
+        for line in f:
+            data.append(json.loads(line))
+
     k = 5
     l = 5
     q = 3
-    pages = getPages(claim,k)
-    sentences = getSentence(pages,l,claim)
-    tables = get_tables(pages,claim,q)
-    print(tables)
+
+    for i, line in enumerate(data):
+        if i <= 21:
+            continue
+        try:
+            claim = line['claim']
+            pages = getPages(claim,k)
+            sentences = getSentence(pages,l,claim)
+            tables = get_tables(pages,claim,q)
+            print(tables)
+            dumpDict = {'claim': claim, 'label': line['label'], 'sentences': sentences, 'tables': tables}
+            with open("retrieved_data.jsonl", "a") as f:
+                f.write(json.dumps(dumpDict) + "\n")
+        except:
+            pass
 
 if __name__=="__main__":
     main()
