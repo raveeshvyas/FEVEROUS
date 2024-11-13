@@ -43,10 +43,10 @@ class TextDataset(Dataset):
         return item
 
 def train_model(model, train_dataloader, val_dataloader,test_dataloader):
-    model = model.train()
     optimizer = torch.optim.AdamW(model.parameters(), lr)
 
     for epoch in range(num_epochs):
+        model.train()
         total_loss = 0
         # Wrap the train_dataloader with tqdm
         for batch in tqdm(train_dataloader, desc=f"Training Epoch {epoch+1}", unit="batch"):
