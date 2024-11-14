@@ -25,3 +25,6 @@ python3 finetuning.py
 5. The checkpoints during finetuning for the RoBERTa model is uploaded here:
 - Use Checkpoint-4
 Link[https://iiitaphyd-my.sharepoint.com/:f:/g/personal/ketaki_shetye_research_iiit_ac_in/Ev6AEwbja9dAnaYAWKNQQkEByj7bs_LQjp4cjvbfpoj65A?e=8Aa4fB]
+
+# Link to the training data
+https://iiitaphyd-my.sharepoint.com/:u:/g/personal/raveesh_vyas_research_iiit_ac_in/EQlz6oCFVd5Ej1By_QmQmzsBLUzmjgJHM9_3DU0RZMfkmw?e=PUmJhF
