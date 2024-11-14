@@ -6,15 +6,18 @@ from sklearn.metrics import f1_score, accuracy_score, precision_score, recall_sc
 import wandb
 from utils import create_train_data, create_dev_data, load_data,create_test_from_retrieved
 import json
+from transformers import get_linear_schedule_with_warmup
 
-wandb.init(project="ANLP_Project", name="NLI-Pretrained_Roberta-FT")
+wandb.init(project="ANLP_Project", name="NLI-Pretrained_Roberta-FT-with scheduler")
 
 max_length=512
 num_epochs=5
-lr=5e-5
+lr=1e-5
 batch_size=16
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 criterion = torch.nn.CrossEntropyLoss()
+num_warmup_steps = 500
+total_training_steps = 10000
 
 
 class TextDataset(Dataset):
@@ -44,6 +47,9 @@ class TextDataset(Dataset):
 
 def train_model(model, train_dataloader, val_dataloader,test_dataloader):
     optimizer = torch.optim.AdamW(model.parameters(), lr)
+    scheduler = get_linear_schedule_with_warmup(optimizer, 
+                                                num_warmup_steps=num_warmup_steps, 
+                                                num_training_steps=total_training_steps)
 
     for epoch in range(num_epochs):
         model.train()
@@ -62,6 +68,7 @@ def train_model(model, train_dataloader, val_dataloader,test_dataloader):
             
             loss.backward()
             optimizer.step()
+            scheduler.step()
             
             total_loss += loss.item()
             wandb.log({"Train Loss": loss.item()})
@@ -74,8 +81,8 @@ def train_model(model, train_dataloader, val_dataloader,test_dataloader):
         evaluate_model(model, val_dataloader, epoch)
         test_model(model,test_dataloader,epoch)
 
-        torch.save(model.state_dict(), f"nlipretrained_checkpoints\checkpoint_{epoch}.pt")
-        wandb.save(f"checkpoint_{epoch}.pt")
+        torch.save(model.state_dict(), f"nlipretrained_checkpoints_scheduler/checkpoint_{epoch}.pt")
+        # wandb.save(f"checkpoint_{epoch}.pt")
 
 def evaluate_model(model, dataloader, epoch):
     model.eval() 
