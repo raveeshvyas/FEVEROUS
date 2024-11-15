@@ -68,9 +68,9 @@ val_dataloader = DataLoader(val_dataset, batch_size, shuffle=False)
 # create_test_from_retrieved()
 
 # COMBINED ############################################
-# x_test, y_test = load_data("test_data.jsonl")
-# test_dataset = TextDataset(x_test, y_test, tokenizer)
-# test_dataloader = DataLoader(test_dataset, batch_size, shuffle=False)
+x_test, y_test = load_data("test_data.jsonl")
+test_dataset = TextDataset(x_test, y_test, tokenizer)
+test_dataloader = DataLoader(test_dataset, batch_size, shuffle=False)
 
 # SENTENCE ONLY #######################################
 # x_test, y_test = load_data("sentence_only.jsonl")

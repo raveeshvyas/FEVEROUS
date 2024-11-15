@@ -1,2 +1,5 @@
-spacy==3.8.2
-scikit-learn==1.5.2
+spacy: 3.8.2
+scikit-learn: 1.5.2
+tqdm version: 4.66.5
+torch version: 2.5.0+cu124
+transformers version: 4.45.2
