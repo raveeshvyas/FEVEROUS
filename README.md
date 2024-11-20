@@ -99,3 +99,6 @@ python3 evaluate.py
 
 ```
 Ensure that the data used for training/evaluating is present in the same directory structure as specified above.
+
+6. The trained models can be downloaded from the link below:
+Link:[https://iiitaphyd-my.sharepoint.com/:f:/g/personal/ketaki_shetye_research_iiit_ac_inEkR1A_xAZuZIrwXtlyCeTaoBUAS009HdNrzKvlWvetYwwQ?e=NRSXtW]
