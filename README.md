@@ -44,23 +44,30 @@
 
 ## Running the model
 
-1. Install all the dependencies. For a clean installation, use a virtual environemt.
+1. Clone the directory with the following link:
+
+```
+https://github.com/raveeshvyas/ANLP-project.git
+
+```
+
+2. Install all the dependencies. For a clean installation, use a virtual environemt.
 ```bash
 pip install -r requirements.txt
 ```
 
-2. Download the sqlite dataset and extract it. The size of the database is 53 GB
+3. Download the sqlite dataset and extract it. The size of the database is 53 GB
 https://fever.ai/dataset/feverous.html
 
 
-3. Evidence Retrieval
+4. Evidence Retrieval
 Run the script `retriever.py` to retrieve the evidence for claim in the FEVEROUS train data.
 
 ```bash
 python3 retriever.py
 ```
 
-4. Verdict Prediction
+5. Verdict Prediction
 
 In the ``` ./Scripts/Verdict Predictor``` directory, find the three finetuning scripts of the experiments.
 - To finetune the RoBERTa base classifier model on the train data, run 
